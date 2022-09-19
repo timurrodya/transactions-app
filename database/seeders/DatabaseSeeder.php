@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Providers;
-use App\Models\Transactions;
+use App\Models\Provider;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
