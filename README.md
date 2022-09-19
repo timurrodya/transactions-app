@@ -11,3 +11,5 @@ NOTE: Please Make sure your Docker is up and running before you run this project
 6. Migrate the database `./vendor/bin/sail artisan migrate`
 7. Seed database `./vendor/bin/sail artisan db:seed`
 8. ./vendor/bin/sail npm install and ./vendor/bin/sail npm run dev
+
+File import.csv for test import
