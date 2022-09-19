@@ -84,9 +84,6 @@ class Transactions extends Component
         ]);
         $path = $this->csv->store('csv');
 
-
-        $header = null;
-        $data = array();
         $countTransactions = 0;
         if (($handle = fopen(storage_path('app/' . $path), 'r')) !== false) {
             while (($row = fgetcsv($handle, 1000, ';')) !== false) {
