@@ -20,7 +20,9 @@ class Transaction extends Model
         'provider_id',
         'process_date'
     ];
-
+    protected $with = [
+        'provider'
+    ];
     public function provider()
     {
         return $this->belongsto(Provider::class);
