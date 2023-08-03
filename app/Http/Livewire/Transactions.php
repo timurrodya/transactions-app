@@ -15,21 +15,35 @@ use Symfony\Component\CssSelector\Parser\Reader;
 
 class Transactions extends Component
 {
-    use WithPagination;
-    use WithFileUploads;
+    use WithPagination, WithFileUploads;
 
     protected $paginationTheme = 'bootstrap';
+
     public $filterUser = '';
+
     public $filterProvider = '';
-    public $user_id, $provider_id, $sum, $currency, $process_date, $csv;
+
+    public $user_id;
+
+    public $provider_id;
+
+    public $sum;
+
+    public $currency;
+
+    public $process_date;
+
+    public $csv;
+
     public $createTransaction;
+
     public $uploadCsv;
 
     protected $rules = [
-        'sum' => 'required|numeric',
-        'user_id' => 'numeric',
-        'provider_id' => 'required|numeric',
-        'currency' => 'required',
+        'sum'          => 'required|numeric',
+        'user_id'      => 'numeric',
+        'provider_id'  => 'required|numeric',
+        'currency'     => 'required',
         'process_date' => 'required|date',
     ];
 
@@ -42,6 +56,7 @@ class Transactions extends Component
             $this->filterProvider = $request->query('filterProvider');
         }
     }
+
     private function resetInputFields()
     {
         $this->sum = '';
@@ -49,27 +64,31 @@ class Transactions extends Component
         $this->provider_id = '';
         $this->process_date = '';
     }
+
     public function uploadCsv()
     {
         $this->uploadCsv = true;
     }
+
     public function createTransaction()
     {
         $this->createTransaction = true;
     }
+
     public function close()
     {
         $this->createTransaction = '';
         $this->uploadCsv = '';
     }
+
     public function store()
     {
         $this->validate();
         Transaction::create([
-            'user_id' => $this->user_id,
-            'sum' => $this->sum,
-            'provider_id' => $this->provider_id,
-            'currency' => $this->currency,
+            'user_id'      => $this->user_id,
+            'sum'          => $this->sum,
+            'provider_id'  => $this->provider_id,
+            'currency'     => $this->currency,
             'process_date' => $this->process_date,
         ]);
         $this->createTransaction = '';
@@ -80,7 +99,7 @@ class Transactions extends Component
     public function upload()
     {
         $this->validate([
-            'csv'  => 'required',
+            'csv' => 'required',
         ]);
         $path = $this->csv->store('csv');
 
@@ -89,10 +108,10 @@ class Transactions extends Component
             while (($row = fgetcsv($handle, 1000, ';')) !== false) {
                 if ($row[0]) {
                     Transaction::create([
-                        'user_id' => $row[0],
-                        'provider_id' => $row[1],
-                        'sum' => $row[2],
-                        'currency' => $row[3],
+                        'user_id'      => $row[0],
+                        'provider_id'  => $row[1],
+                        'sum'          => $row[2],
+                        'currency'     => $row[3],
                         'process_date' => $row[4],
                     ]);
                     $countTransactions++;
@@ -106,7 +125,6 @@ class Transactions extends Component
 
     public function render()
     {
-
         $transactions = Transaction::query()
             ->when($this->filterUser, function ($query) {
                 return $query->where('user_id', $this->filterUser);
@@ -117,6 +135,7 @@ class Transactions extends Component
             ->with('provider', 'user')->paginate(30);
         $users = User::all();
         $providers = Provider::all();
+
         return view('livewire.transactions', compact('transactions', 'users', 'providers'));
     }
 }
